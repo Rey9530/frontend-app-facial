@@ -162,7 +162,7 @@ class ContainerCameraWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(1000),
               ),
-              // child: const CameraWidget(),
+              child: const CameraWidget(),
             ),
           ),
         ),
