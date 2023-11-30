@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:marcarcion/common/widgets/dialod_confirm_marca_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_confirm_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_widget.dart';
 import 'package:marcarcion/common/widgets/index.dart';
@@ -92,17 +93,27 @@ class ScanPage extends StatelessWidget {
               ),
             ),
             const ContainerCameraWidget(),
-            Container(
-              width: 250,
-              height: 80,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(1000),
-              ),
-              child: const Text(
-                "Marcar",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+            GestureDetector(
+              onTap: () async {
+                return showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const AlertMarcaSuccess();
+                  },
+                );
+              },
+              child: Container(
+                width: 250,
+                height: 80,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(1000),
+                ),
+                child: const Text(
+                  "Marcar",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 26),
+                ),
               ),
             ),
             const SizedBox(height: 20),
