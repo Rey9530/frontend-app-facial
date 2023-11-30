@@ -1,10 +1,23 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:marcarcion/common/widgets/dialod_confirm_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_widget.dart';
 import 'package:marcarcion/common/widgets/index.dart';
 
 class ScanPage extends StatelessWidget {
   const ScanPage({super.key});
+
+  showDialogConfir(context) async {
+    // await Future.delayed(const Duration(milliseconds: 500));
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertSuccess();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +25,7 @@ class ScanPage extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 30),
+            SizedBox(height: Platform.isIOS ? 55 : 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -21,7 +34,11 @@ class ScanPage extends StatelessWidget {
                     return showDialog<void>(
                       context: context,
                       builder: (BuildContext context) {
-                        return const AlertNewEnroll();
+                        return AlertNewEnroll(
+                          onPress: () {
+                            showDialogConfir(context);
+                          },
+                        );
                       },
                     );
                   },
@@ -76,7 +93,7 @@ class ScanPage extends StatelessWidget {
             ),
             const ContainerCameraWidget(),
             Container(
-              width: 200,
+              width: 250,
               height: 80,
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -134,7 +151,7 @@ class ContainerCameraWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(1000),
               ),
-              child: const CameraWidget(),
+              // child: const CameraWidget(),
             ),
           ),
         ),
