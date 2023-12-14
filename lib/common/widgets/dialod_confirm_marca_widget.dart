@@ -66,36 +66,6 @@ class _AlertMarcaSuccessState extends State<AlertMarcaSuccess> {
           ],
         ),
       ),
-      // actions: [
-      //   Row(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       GestureDetector(
-      //         onTap: () {
-      //           Navigator.pop(context);
-      //         },
-      //         child: Container(
-      //           height: 60,
-      //           width: 200,
-      //           padding: const EdgeInsets.symmetric(horizontal: 50),
-      //           alignment: Alignment.center,
-      //           decoration: BoxDecoration(
-      //             color: Theme.of(context).colorScheme.primary,
-      //             borderRadius: BorderRadius.circular(1000),
-      //           ),
-      //           child: const Text(
-      //             "Iniciar",
-      //             style: TextStyle(
-      //               fontWeight: FontWeight.w600,
-      //               fontSize: 18,
-      //               color: Colors.white,
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ],
-      //   )
-      // ],
     );
   }
 }

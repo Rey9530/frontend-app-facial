@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:marcarcion/common/widgets/dialod_confirm_marca_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_confirm_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_widget.dart';
 import 'package:marcarcion/common/widgets/index.dart';
+import 'package:marcarcion/view/face_detectors/face_detector_view.dart';
 
 class ScanPage extends StatelessWidget {
   const ScanPage({super.key});
@@ -162,7 +162,10 @@ class ContainerCameraWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(1000),
               ),
-              child: const CameraWidget(),
+              child: const ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(1000)),
+                child: FaceDetectorView(),
+              ),
             ),
           ),
         ),
@@ -171,83 +174,83 @@ class ContainerCameraWidget extends StatelessWidget {
   }
 }
 
-class CameraWidget extends StatelessWidget {
-  const CameraWidget({
-    super.key,
-  });
+// class CameraWidget extends StatelessWidget {
+//   const CameraWidget({
+//     super.key,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: availableCameras(),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SizedBox();
-        }
-        if (snapshot.hasData) {
-          return CameraApp(
-            camera: snapshot.data[0],
-          );
-        }
-        return const SizedBox();
-      },
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return FutureBuilder(
+//       future: availableCameras(),
+//       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+//         if (snapshot.connectionState == ConnectionState.waiting) {
+//           return const SizedBox();
+//         }
+//         if (snapshot.hasData) {
+//           return CameraApp(
+//             camera: snapshot.data[1],
+//           );
+//         }
+//         return const SizedBox();
+//       },
+//     );
+//   }
+// }
 
-/// CameraApp is the Main Application.
-class CameraApp extends StatefulWidget {
-  /// Default Constructor
-  const CameraApp({super.key, required this.camera});
-  final CameraDescription camera;
-  @override
-  State<CameraApp> createState() => _CameraAppState();
-}
+// /// CameraApp is the Main Application.
+// class CameraApp extends StatefulWidget {
+//   /// Default Constructor
+//   const CameraApp({super.key, required this.camera});
+//   final CameraDescription camera;
+//   @override
+//   State<CameraApp> createState() => _CameraAppState();
+// }
 
-class _CameraAppState extends State<CameraApp> {
-  late CameraController controller;
+// class _CameraAppState extends State<CameraApp> {
+//   late CameraController controller;
 
-  @override
-  void initState() {
-    super.initState();
-    controller = CameraController(
-      widget.camera,
-      ResolutionPreset.max,
-      enableAudio: false,
-    );
-    controller.initialize().then((_) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {});
-    }).catchError((Object e) {
-      if (e is CameraException) {
-        switch (e.code) {
-          case 'CameraAccessDenied':
-            // Handle access errors here.
-            break;
-          default:
-            // Handle other errors here.
-            break;
-        }
-      }
-    });
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     controller = CameraController(
+//       widget.camera,
+//       ResolutionPreset.max,
+//       enableAudio: false,
+//     );
+//     controller.initialize().then((_) {
+//       if (!mounted) {
+//         return;
+//       }
+//       setState(() {});
+//     }).catchError((Object e) {
+//       if (e is CameraException) {
+//         switch (e.code) {
+//           case 'CameraAccessDenied':
+//             // Handle access errors here.
+//             break;
+//           default:
+//             // Handle other errors here.
+//             break;
+//         }
+//       }
+//     });
+//   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
+//   @override
+//   void dispose() {
+//     controller.dispose();
+//     super.dispose();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (!controller.value.isInitialized) {
-      return Container();
-    }
-    return ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(1000)),
-      child: CameraPreview(controller),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     if (!controller.value.isInitialized) {
+//       return Container();
+//     }
+//     return ClipRRect(
+//       borderRadius: const BorderRadius.all(Radius.circular(1000)),
+//       child: CameraPreview(controller),
+//     );
+//   }
+// }
