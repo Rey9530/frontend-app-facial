@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:marcarcion/common/utils/const_color.dart';
+import 'package:marcarcion/provider/faces_provider.dart';
 import 'package:marcarcion/view/pages.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => FacesProvider(),
+          lazy: false,
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

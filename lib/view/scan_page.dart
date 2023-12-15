@@ -5,7 +5,9 @@ import 'package:marcarcion/common/widgets/dialod_confirm_marca_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_confirm_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_widget.dart';
 import 'package:marcarcion/common/widgets/index.dart';
+import 'package:marcarcion/provider/faces_provider.dart';
 import 'package:marcarcion/view/face_detectors/face_detector_view.dart';
+import 'package:provider/provider.dart';
 
 class ScanPage extends StatelessWidget {
   const ScanPage({super.key});
@@ -22,6 +24,7 @@ class ScanPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FacesProvider>(context, listen: false);
     return BackGroundWidget(
       child: SingleChildScrollView(
         child: Column(
@@ -95,12 +98,13 @@ class ScanPage extends StatelessWidget {
             const ContainerCameraWidget(),
             GestureDetector(
               onTap: () async {
-                return showDialog<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const AlertMarcaSuccess();
-                  },
-                );
+                await provider.startVideoRecording();
+                // return showDialog<void>(
+                //   context: context,
+                //   builder: (BuildContext context) {
+                //     return const AlertMarcaSuccess();
+                //   },
+                // );
               },
               child: Container(
                 width: 250,
@@ -173,84 +177,3 @@ class ContainerCameraWidget extends StatelessWidget {
     );
   }
 }
-
-// class CameraWidget extends StatelessWidget {
-//   const CameraWidget({
-//     super.key,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return FutureBuilder(
-//       future: availableCameras(),
-//       builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const SizedBox();
-//         }
-//         if (snapshot.hasData) {
-//           return CameraApp(
-//             camera: snapshot.data[1],
-//           );
-//         }
-//         return const SizedBox();
-//       },
-//     );
-//   }
-// }
-
-// /// CameraApp is the Main Application.
-// class CameraApp extends StatefulWidget {
-//   /// Default Constructor
-//   const CameraApp({super.key, required this.camera});
-//   final CameraDescription camera;
-//   @override
-//   State<CameraApp> createState() => _CameraAppState();
-// }
-
-// class _CameraAppState extends State<CameraApp> {
-//   late CameraController controller;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     controller = CameraController(
-//       widget.camera,
-//       ResolutionPreset.max,
-//       enableAudio: false,
-//     );
-//     controller.initialize().then((_) {
-//       if (!mounted) {
-//         return;
-//       }
-//       setState(() {});
-//     }).catchError((Object e) {
-//       if (e is CameraException) {
-//         switch (e.code) {
-//           case 'CameraAccessDenied':
-//             // Handle access errors here.
-//             break;
-//           default:
-//             // Handle other errors here.
-//             break;
-//         }
-//       }
-//     });
-//   }
-
-//   @override
-//   void dispose() {
-//     controller.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (!controller.value.isInitialized) {
-//       return Container();
-//     }
-//     return ClipRRect(
-//       borderRadius: const BorderRadius.all(Radius.circular(1000)),
-//       child: CameraPreview(controller),
-//     );
-//   }
-// }
