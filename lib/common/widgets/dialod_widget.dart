@@ -53,8 +53,8 @@ class _AlertNewEnrollState extends State<AlertNewEnroll> {
         height: 80,
         child: TextFormField(
           autovalidateMode: AutovalidateMode.always,
+          keyboardType: TextInputType.number,
           validator: (String? valor) {
-            // if (valor == null || valor.length < 6) return "Incorrecto";
             return null;
           },
           onChanged: (valor) {
