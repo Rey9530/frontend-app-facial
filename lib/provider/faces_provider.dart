@@ -163,12 +163,6 @@ class FacesProvider extends ChangeNotifier {
       );
       customPaint = CustomPaint(painter: painter);
     } else {
-      // String text = 'Faces found: ${faces.length}\n\n';
-      // for (final face in faces) {
-      //   text += 'face: ${face.boundingBox}\n\n';
-      // }
-      // _text = text;
-      // print(_text);
       // TODO: set customPaint to draw boundingRect on top of image
       customPaint = null;
     }
@@ -199,13 +193,13 @@ class FacesProvider extends ChangeNotifier {
 
   Future<XFile?> stopVideoRecording() async {
     if (!controllerCamera!.value.isRecordingVideo) {
-      // Error: no se está grabando
+      // Error: no se está graband5o
       return null;
     }
     try {
       var file = await controllerCamera!.stopVideoRecording();
-      await uploadFile(file.path);
-      _startLiveFeed();
+      await uploadFile(file);
+      // _startLiveFeed();
       return file;
     } on CameraException catch (e) {
       print(e.toString());
@@ -214,28 +208,36 @@ class FacesProvider extends ChangeNotifier {
     }
   }
 
-  Future<FormData> createFormData(String file) async {
+  Future<FormData> createFormData(XFile file) async {
     // String fileName = basename(file);
     return FormData.fromMap(
       {
-        "archivo": await MultipartFile.fromFile(file, filename: "CodigoF"),
-        // Agrega otros campos si son necesarios
+        "file": await MultipartFile.fromFile(file.path, filename: file.name),
       },
     );
   }
 
   static Dio dio = Dio();
-  Future<void> uploadFile(String file) async {
+  Future<void> uploadFile(XFile file) async {
+    print("file=0000=================================================");
+    print(file);
     FormData formData = await createFormData(file);
 
     try {
-      Response response = await dio.get(
-        "http://localhost:3000/api/v1/users/login",
+      Response response = await dio.post(
+        "http://10.0.2.2:3000/api/files",
         data: formData,
+        options: Options(
+          headers: {
+            'accept': ' */*',
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
       );
       // Manejar respuesta
       print("Archivo subido: ${response.data}");
-    } on DioError catch (e) {
+    } on DioException catch (e) {
+      print(e.toString());
       // Manejar error
       print("Error al subir archivo: $e");
     }
