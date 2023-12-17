@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marcarcion/provider/faces_provider.dart';
 import 'package:provider/provider.dart';
 
-class AlertSuccess extends StatefulWidget {
-  const AlertSuccess({
+class ErrorEnrrolDialog extends StatelessWidget {
+  const ErrorEnrrolDialog({
     super.key,
   });
 
-  @override
-  State<AlertSuccess> createState() => _AlertSuccessState();
-}
-
-class _AlertSuccessState extends State<AlertSuccess> {
-  bool isValid = false;
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<FacesProvider>(context, listen: false);
@@ -26,29 +21,46 @@ class _AlertSuccessState extends State<AlertSuccess> {
       ),
       title: Container(
         alignment: Alignment.center,
+        color: Colors.white,
         child: Column(
           children: [
-            Image.asset(
-              "assets/images/face-scan-circle.png",
-              width: 70,
-            ),
+            SvgPicture.asset("assets/svg/face-scan-circle-error.svg"),
             const Text(
-              'Reconocimiento facial',
+              'No se pudo reconocer',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: 'MuseoSans',
                 fontSize: 26,
+                color: Color(0XFFFF4220),
               ),
-            ),
+            )
           ],
         ),
       ),
-      content: const Text(
-        'Se tomará un video de 10 segundos.\n\nPor favor, colocar su rostro dentro del círculo y hacer\nmovimientos suaves hacia su derecha, izquierda,\narriba y abajo.',
-        style: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontFamily: 'MuseoSans',
-          // fontSize: 26,
+      content: const SizedBox(
+        height: 130,
+        width: 350,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Intentalo nuevamente.\n\nSi el problema persiste, contacta a soporte\ntécnico al siguiente correo:",
+              style: TextStyle(
+                color: Color(0XFF454B54),
+                fontSize: 18,
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            Text(
+              "ejemplodecorreo@cel.gob.sv",
+              style: TextStyle(
+                color: Color(0XFF454B54),
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
       ),
       actions: [
@@ -58,7 +70,7 @@ class _AlertSuccessState extends State<AlertSuccess> {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                provider.startTimer();
+                provider.respOk = null;
               },
               child: Container(
                 height: 60,
@@ -70,7 +82,7 @@ class _AlertSuccessState extends State<AlertSuccess> {
                   borderRadius: BorderRadius.circular(1000),
                 ),
                 child: const Text(
-                  "Iniciar",
+                  "Reintentar",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,

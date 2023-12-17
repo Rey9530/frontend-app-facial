@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:image/image.dart' as img;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -175,57 +177,106 @@ class FacesProvider extends ChangeNotifier {
     if (mounted) {}
   }
 
-  Future<void> startVideoRecording() async {
+  bool loading = false;
+  Future<void> takePicture([load = false]) async {
     if (!controllerCamera!.value.isInitialized) {
-      // Error: la cámara no está lista
+      // La cámara no está lista
       return;
     }
+    if (load) {
+      loading = true;
+      notifyListeners();
+    }
 
     try {
-      await controllerCamera?.startVideoRecording();
-      await Future.delayed(const Duration(seconds: 5));
-      await stopVideoRecording();
-    } on CameraException catch (e) {
-      print(e.toString());
-      // Manejar error
-    }
-  }
-
-  Future<XFile?> stopVideoRecording() async {
-    if (!controllerCamera!.value.isRecordingVideo) {
-      // Error: no se está graband5o
-      return null;
-    }
-    try {
-      var file = await controllerCamera!.stopVideoRecording();
-      await uploadFile(file);
+      final image = await controllerCamera!.takePicture();
+      // Usa la imagen capturada
+      // Por ejemplo, puedes guardarla en un archivo
+      // final path = image.path; // Ruta del archivo de la imagen
+      var newPath = await convertToPngAndSave(image.path);
+      await uploadFile(newPath);
       // _startLiveFeed();
-      return file;
-    } on CameraException catch (e) {
-      print(e.toString());
+    } catch (e) {
       // Manejar error
-      return null;
+    } finally {
+      if (load) {
+        loading = false;
+        notifyListeners();
+      }
     }
   }
 
-  Future<FormData> createFormData(XFile file) async {
-    // String fileName = basename(file);
+  Future<String> convertToPngAndSave(String imagePath) async {
+    // Leer el archivo de imagen como una lista de bytes
+    final imageBytes = await File(imagePath).readAsBytes();
+    // Decodificar la imagen a un formato editable
+    img.Image? image = img.decodeImage(imageBytes);
+
+    if (image != null) {
+      // Convertir a PNG
+      var pngBytes = img.encodePng(image);
+
+      // Guardar el archivo PNG
+      String newImagePath = imagePath.replaceAll('.jpg', '.png');
+      await File(newImagePath).writeAsBytes(pngBytes);
+      return newImagePath; // Retorna la nueva ruta si necesitas usarla
+    }
+    return '';
+  }
+
+  // Future<void> startVideoRecording() async {
+  //   if (!controllerCamera!.value.isInitialized) {
+  //     // Error: la cámara no está lista
+  //     return;
+  //   }
+
+  //   try {
+  //     await controllerCamera?.startVideoRecording();
+  //     await Future.delayed(const Duration(seconds: 5));
+  //     await stopVideoRecording();
+  //   } on CameraException catch (e) {
+  //     print(e.toString());
+  //     // Manejar error
+  //   }
+  // }
+
+  // Future<XFile?> stopVideoRecording() async {
+  //   if (!controllerCamera!.value.isRecordingVideo) {
+  //     // Error: no se está graband5o
+  //     return null;
+  //   }
+  //   try {
+  //     var file = await controllerCamera!.stopVideoRecording();
+  //     await uploadFile(file);
+  //     // _startLiveFeed();
+  //     return file;
+  //   } on CameraException catch (e) {
+  //     print(e.toString());
+  //     // Manejar error
+  //     return null;
+  //   }
+  // }
+
+  Future<FormData> createFormData(String file) async {
+    var splitName = file.split(".");
     return FormData.fromMap(
       {
-        "file": await MultipartFile.fromFile(file.path, filename: file.name),
+        "file": await MultipartFile.fromFile(file,
+            filename: "file.${splitName[splitName.length - 1]}"),
       },
     );
   }
 
-  static Dio dio = Dio();
-  Future<void> uploadFile(XFile file) async {
-    print("file=0000=================================================");
-    print(file);
+  static final Dio _dio = Dio();
+  final codeController = TextEditingController();
+  // ignore: prefer_typing_uninitialized_variables
+  var respOk;
+  Future<void> uploadFile(String file) async {
     FormData formData = await createFormData(file);
 
     try {
-      Response response = await dio.post(
-        "http://10.0.2.2:3000/api/files",
+      Response response = await _dio.post(
+        "http://10.0.2.2:3000/api/files/${codeController.text.isNotEmpty ? codeController.text : ''}",
         data: formData,
         options: Options(
           headers: {
@@ -234,12 +285,38 @@ class FacesProvider extends ChangeNotifier {
           },
         ),
       );
-      // Manejar respuesta
-      print("Archivo subido: ${response.data}");
+      respOk = response.data;
+      print("e.success=========");
+      print(respOk);
     } on DioException catch (e) {
-      print(e.toString());
-      // Manejar error
-      print("Error al subir archivo: $e");
+      print("e.message=========");
+      print(e.response?.data);
+      respOk = e.response?.data;
+      print(respOk);
+    } finally {
+      codeController.text = '';
     }
+  }
+
+  var counter = 10;
+  Timer? timer;
+  bool isEnroll = false;
+  startTimer() {
+    isEnroll = true;
+    notifyListeners();
+    counter = 10; // Restablecer el contador al iniciar
+    timer = Timer.periodic(const Duration(seconds: 1), (times) {
+      counter--;
+      notifyListeners();
+      if (counter == 8) {
+        takePicture();
+      }
+      if (counter == 0) {
+        counter = 10;
+        timer!.cancel();
+        timer = null;
+        isEnroll = false;
+      }
+    });
   }
 }

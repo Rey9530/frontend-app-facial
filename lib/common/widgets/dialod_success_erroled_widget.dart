@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:marcarcion/provider/faces_provider.dart';
 import 'package:provider/provider.dart';
 
-class AlertSuccess extends StatefulWidget {
-  const AlertSuccess({
+class SuccessEnrrolDialog extends StatefulWidget {
+  const SuccessEnrrolDialog({
     super.key,
   });
 
   @override
-  State<AlertSuccess> createState() => _AlertSuccessState();
+  State<SuccessEnrrolDialog> createState() => _SuccessEnrrolDialogState();
 }
 
-class _AlertSuccessState extends State<AlertSuccess> {
+class _SuccessEnrrolDialogState extends State<SuccessEnrrolDialog> {
   bool isValid = false;
   @override
   Widget build(BuildContext context) {
@@ -26,29 +26,25 @@ class _AlertSuccessState extends State<AlertSuccess> {
       ),
       title: Container(
         alignment: Alignment.center,
-        child: Column(
-          children: [
-            Image.asset(
-              "assets/images/face-scan-circle.png",
-              width: 70,
-            ),
-            const Text(
-              'Reconocimiento facial',
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontFamily: 'MuseoSans',
-                fontSize: 26,
-              ),
-            ),
-          ],
+        color: Colors.white,
+        child: Image.asset(
+          "assets/images/Rectangle.png",
+          width: 112,
+          height: 112,
         ),
       ),
-      content: const Text(
-        'Se tomará un video de 10 segundos.\n\nPor favor, colocar su rostro dentro del círculo y hacer\nmovimientos suaves hacia su derecha, izquierda,\narriba y abajo.',
-        style: TextStyle(
-          fontWeight: FontWeight.w300,
-          fontFamily: 'MuseoSans',
-          // fontSize: 26,
+      content: Container(
+        width: 400,
+        height: 40,
+        alignment: Alignment.center,
+        child: const Text(
+          'Enrolamiento completo',
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            fontFamily: 'MuseoSans',
+            fontSize: 26,
+            color: Color(0XFF55C157),
+          ),
         ),
       ),
       actions: [
@@ -58,7 +54,7 @@ class _AlertSuccessState extends State<AlertSuccess> {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                provider.startTimer();
+                provider.respOk = null;
               },
               child: Container(
                 height: 60,
@@ -70,7 +66,7 @@ class _AlertSuccessState extends State<AlertSuccess> {
                   borderRadius: BorderRadius.circular(1000),
                 ),
                 child: const Text(
-                  "Iniciar",
+                  "Aceptar",
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 18,

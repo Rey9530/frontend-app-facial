@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:marcarcion/provider/faces_provider.dart';
+import 'package:provider/provider.dart';
 
 class AlertNewEnroll extends StatefulWidget {
   const AlertNewEnroll({
@@ -16,6 +18,7 @@ class _AlertNewEnrollState extends State<AlertNewEnroll> {
   bool isValid = false;
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FacesProvider>(context, listen: false);
     return AlertDialog(
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
@@ -25,6 +28,7 @@ class _AlertNewEnrollState extends State<AlertNewEnroll> {
         ),
       ),
       title: Container(
+        width: 200,
         alignment: Alignment.center,
         child: const Column(
           children: [
@@ -52,6 +56,7 @@ class _AlertNewEnrollState extends State<AlertNewEnroll> {
         width: 500,
         height: 80,
         child: TextFormField(
+          controller: provider.codeController,
           autovalidateMode: AutovalidateMode.always,
           keyboardType: TextInputType.number,
           validator: (String? valor) {
@@ -106,7 +111,8 @@ class _AlertNewEnrollState extends State<AlertNewEnroll> {
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                height: 60,
+                height: 80,
+                width: 150,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -124,17 +130,20 @@ class _AlertNewEnrollState extends State<AlertNewEnroll> {
             const Expanded(child: SizedBox()),
             GestureDetector(
               onTap: () {
-                Navigator.pop(context);
-                widget.onPress();
+                if (isValid) {
+                  Navigator.pop(context);
+                  widget.onPress();
+                }
               },
               child: Container(
-                height: 60,
+                height: 80,
+                width: 250,
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   color: isValid
                       ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.primary.withOpacity(0.4),
+                      : const Color(0XFF778393),
                   borderRadius: BorderRadius.circular(1000),
                 ),
                 child: const Text(
