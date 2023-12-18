@@ -6,6 +6,7 @@ import 'package:marcarcion/common/widgets/dialod_confirm_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_success_erroled_widget.dart';
 import 'package:marcarcion/common/widgets/dialod_widget.dart';
 import 'package:marcarcion/common/widgets/error_dialog_enrrole_widget.dart';
+import 'package:marcarcion/common/widgets/error_dialog_marca_widget.dart';
 import 'package:marcarcion/common/widgets/index.dart';
 import 'package:marcarcion/provider/faces_provider.dart';
 import 'package:marcarcion/view/face_detectors/face_detector_view.dart';
@@ -116,6 +117,17 @@ class BtnMarcarWidget extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return const AlertMarcaSuccess();
+                  },
+                );
+              } else {
+                var msg = provider.respOk['message'] ?? '';
+                // ignore: use_build_context_synchronously
+                return showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return ErrorEnrrolLoginDialog(
+                      message: msg,
+                    );
                   },
                 );
               }

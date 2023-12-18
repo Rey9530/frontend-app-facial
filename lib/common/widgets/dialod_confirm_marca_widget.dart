@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:marcarcion/provider/faces_provider.dart';
+import 'package:provider/provider.dart';
 
-class AlertMarcaSuccess extends StatefulWidget {
+class AlertMarcaSuccess extends StatelessWidget {
   const AlertMarcaSuccess({
     super.key,
   });
 
-  @override
-  State<AlertMarcaSuccess> createState() => _AlertMarcaSuccessState();
-}
+  cerrarDialog(context) async {
+    await Future.delayed(const Duration(seconds: 5));
+    Navigator.pop(context);
+  }
 
-class _AlertMarcaSuccessState extends State<AlertMarcaSuccess> {
-  bool isValid = false;
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<FacesProvider>(context, listen: false);
+    cerrarDialog(context);
     return AlertDialog(
       backgroundColor: Colors.white,
       surfaceTintColor: Colors.transparent,
@@ -46,7 +49,7 @@ class _AlertMarcaSuccessState extends State<AlertMarcaSuccess> {
         child: Column(
           children: [
             Text(
-              'Mario Ernesto Bonilla López.',
+              provider.respOk['data']['empleado'],
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: 'MuseoSans',
@@ -55,7 +58,7 @@ class _AlertMarcaSuccessState extends State<AlertMarcaSuccess> {
               ),
             ),
             Text(
-              '07:59 am.',
+              provider.respOk['data']['hora'],
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontFamily: 'MuseoSans',
